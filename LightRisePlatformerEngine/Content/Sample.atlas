@@ -1,0 +1,167 @@
+
+Sample.png
+size: 512,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Без имени-1
+  rotate: false
+  xy: 300 ,1
+  size: 200 ,200
+  orig: 200 ,200
+  offset: 0,0
+  index: -1
+Ресурс 49
+  rotate: false
+  xy: 1 ,1
+  size: 297 ,548
+  orig: 297 ,548
+  offset: 0,0
+  index: -1
+girl_foot
+  rotate: false
+  xy: 51 ,551
+  size: 61 ,58
+  orig: 61 ,58
+  offset: 0,0
+  index: -1
+girl_leg_right
+  rotate: false
+  xy: 1 ,744
+  size: 49 ,182
+  orig: 49 ,182
+  offset: 0,0
+  index: -1
+girl_thigh_right
+  rotate: false
+  xy: 401 ,394
+  size: 76 ,176
+  orig: 76 ,176
+  offset: 0,0
+  index: -1
+girl_leg_left 
+  rotate: false
+  xy: 1 ,551
+  size: 48 ,177
+  orig: 48 ,177
+  offset: 0,0
+  index: -1
+girl_thigh_left 
+  rotate: false
+  xy: 426 ,203
+  size: 79 ,189
+  orig: 79 ,189
+  offset: 0,0
+  index: -1
+girl_arm_right
+  rotate: false
+  xy: 479 ,394
+  size: 24 ,83
+  orig: 24 ,83
+  offset: 0,0
+  index: -1
+girl_shoulder_right 
+  rotate: false
+  xy: 465 ,779
+  size: 35 ,94
+  orig: 35 ,94
+  offset: 0,0
+  index: -1
+girl_hair_2
+  rotate: false
+  xy: 352 ,725
+  size: 111 ,85
+  orig: 111 ,85
+  offset: 0,0
+  index: -1
+girl_head
+  rotate: false
+  xy: 300 ,203
+  size: 124 ,121
+  orig: 124 ,121
+  offset: 0,0
+  index: -1
+girl_hair_1
+  rotate: false
+  xy: 394 ,572
+  size: 62 ,126
+  orig: 62 ,126
+  offset: 0,0
+  index: -1
+girl_body
+  rotate: false
+  xy: 300 ,326
+  size: 99 ,151
+  orig: 99 ,151
+  offset: 0,0
+  index: -1
+girl_sword
+  rotate: false
+  xy: 352 ,479
+  size: 40 ,244
+  orig: 40 ,244
+  offset: 0,0
+  index: -1
+girl_sword_magiс 
+  rotate: false
+  xy: 300 ,479
+  size: 50 ,263
+  orig: 50 ,263
+  offset: 0,0
+  index: -1
+girl_arm_left
+  rotate: false
+  xy: 465 ,671
+  size: 33 ,106
+  orig: 33 ,106
+  offset: 0,0
+  index: -1
+girl_shoulder_left
+  rotate: false
+  xy: 458 ,572
+  size: 37 ,97
+  orig: 37 ,97
+  offset: 0,0
+  index: -1
+girl_eyes_1
+  rotate: false
+  xy: 401 ,326
+  size: 14 ,17
+  orig: 14 ,17
+  offset: 0,0
+  index: -1
+girl_eyes_2
+  rotate: false
+  xy: 401 ,345
+  size: 14 ,17
+  orig: 14 ,17
+  offset: 0,0
+  index: -1
+girl_eyes_3
+  rotate: false
+  xy: 401 ,364
+  size: 14 ,17
+  orig: 14 ,17
+  offset: 0,0
+  index: -1
+girl_eyelash
+  rotate: false
+  xy: 414 ,383
+  size: 10 ,6
+  orig: 10 ,6
+  offset: 0,0
+  index: -1
+girl_lips_1
+  rotate: false
+  xy: 401 ,383
+  size: 11 ,8
+  orig: 11 ,8
+  offset: 0,0
+  index: -1
+girl_lips_1_1
+  rotate: false
+  xy: 394 ,700
+  size: 11 ,7
+  orig: 11 ,7
+  offset: 0,0
+  index: -1

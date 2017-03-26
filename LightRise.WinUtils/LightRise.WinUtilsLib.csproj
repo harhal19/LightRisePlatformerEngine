@@ -41,10 +41,54 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CSharpSpine\Animation.cs" />
+    <Compile Include="CSharpSpine\AnimationState.cs" />
+    <Compile Include="CSharpSpine\AnimationStateData.cs" />
+    <Compile Include="CSharpSpine\Atlas.cs" />
+    <Compile Include="CSharpSpine\Attachments\AtlasAttachmentLoader.cs" />
+    <Compile Include="CSharpSpine\Attachments\Attachment.cs" />
+    <Compile Include="CSharpSpine\Attachments\AttachmentLoader.cs" />
+    <Compile Include="CSharpSpine\Attachments\AttachmentType.cs" />
+    <Compile Include="CSharpSpine\Attachments\BoundingBoxAttachment.cs" />
+    <Compile Include="CSharpSpine\Attachments\MeshAttachment.cs" />
+    <Compile Include="CSharpSpine\Attachments\PathAttachment.cs" />
+    <Compile Include="CSharpSpine\Attachments\RegionAttachment.cs" />
+    <Compile Include="CSharpSpine\Attachments\VertexAttachment.cs" />
+    <Compile Include="CSharpSpine\BlendMode.cs" />
+    <Compile Include="CSharpSpine\Bone.cs" />
+    <Compile Include="CSharpSpine\BoneData.cs" />
+    <Compile Include="CSharpSpine\Event.cs" />
+    <Compile Include="CSharpSpine\EventData.cs" />
+    <Compile Include="CSharpSpine\ExposedList.cs" />
+    <Compile Include="CSharpSpine\IConstraint.cs" />
+    <Compile Include="CSharpSpine\IkConstraint.cs" />
+    <Compile Include="CSharpSpine\IkConstraintData.cs" />
+    <Compile Include="CSharpSpine\IUpdatable.cs" />
+    <Compile Include="CSharpSpine\Json.cs" />
+    <Compile Include="CSharpSpine\MathUtils.cs" />
+    <Compile Include="CSharpSpine\PathConstraint.cs" />
+    <Compile Include="CSharpSpine\PathConstraintData.cs" />
+    <Compile Include="CSharpSpine\Skeleton.cs" />
+    <Compile Include="CSharpSpine\SkeletonBinary.cs" />
+    <Compile Include="CSharpSpine\SkeletonBounds.cs" />
+    <Compile Include="CSharpSpine\SkeletonData.cs" />
+    <Compile Include="CSharpSpine\SkeletonJson.cs" />
+    <Compile Include="CSharpSpine\Skin.cs" />
+    <Compile Include="CSharpSpine\Slot.cs" />
+    <Compile Include="CSharpSpine\SlotData.cs" />
+    <Compile Include="CSharpSpine\TransformConstraint.cs" />
+    <Compile Include="CSharpSpine\TransformConstraintData.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpineObject.cs" />
     <Compile Include="WinUtils.cs" />
+    <Compile Include="XNASpine\MeshBatcher.cs" />
+    <Compile Include="XNASpine\RegionBatcher.cs" />
+    <Compile Include="XNASpine\SkeletonMeshRenderer.cs" />
+    <Compile Include="XNASpine\SkeletonRegionRenderer.cs" />
+    <Compile Include="XNASpine\Util.cs" />
+    <Compile Include="XNASpine\XnaTextureLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

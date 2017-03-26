@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 using LightRise.BaseClasses;
 using LightRise.WinUtilsLib;
+using System;
 
 namespace LightRise.MapEditor {
     /// <summary>
@@ -113,6 +114,10 @@ namespace LightRise.MapEditor {
 
             if (KeyboardState.IsKeyDown(Keys.D1)) {
                 CurrentValue = Map.WALL;
+            } else if (KeyboardState.IsKeyDown(Keys.D2)) {
+                CurrentValue = Map.LEFT_SHELF;
+            } else if (KeyboardState.IsKeyDown(Keys.D3)) {
+                CurrentValue = Map.RIGHT_SHELF;
             } else if (KeyboardState.IsKeyDown(Keys.Tab)) {
                 CurrentValue = Map.EMPTY;
             }
@@ -183,7 +188,16 @@ namespace LightRise.MapEditor {
 
             if (KeyboardState.IsKeyDown(Keys.S) && !PreviousKeyboardState.IsKeyDown(Keys.S)) {
                 Map mapToSave = Map.ConvertToBig(Maps);
-                WinUtils.Save(mapToSave);
+                WinUtils.Save(mapToSave, PlayerPosition);
+            }
+
+            if (KeyboardState.IsKeyDown(Keys.O) && !PreviousKeyboardState.IsKeyDown(Keys.O)) {
+                Tuple<Map, Point> mapToLoad = WinUtils.LoadMap( );
+                Maps = Map.ConvertFromBig(mapToLoad.Item1, MAP_SIZE);
+                PlayerPosition = mapToLoad.Item2;
+                Cam.Position = PlayerPosition.ToVector2( ) - new Vector2(
+                    Graphics.PreferredBackBufferWidth / Cam.Scale.X / 2,
+                    Graphics.PreferredBackBufferHeight / Cam.Scale.Y / 2);
             }
 
             PreviousKeyboardState = KeyboardState;
@@ -196,7 +210,7 @@ namespace LightRise.MapEditor {
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             SpriteBatch.Begin( );
             for (uint i = 0; i < Maps.Length; i++) {
