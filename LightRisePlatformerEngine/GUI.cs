@@ -21,7 +21,7 @@ namespace LightRise.BaseClasses {
         public override void Update(StepState state) {
             if (state.Keyboard.IsKeyDown(Keys.Escape)) {
                 Program.MainThread.GUIes.Remove(this);
-                Program.MainThread.Player.Locked = false;
+                //Program.MainThread.Player.Locked = false;
             }
         }
     }

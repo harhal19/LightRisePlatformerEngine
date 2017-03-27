@@ -73,11 +73,9 @@ namespace LightRise.Main {
         protected override void Initialize( ) {
             Tuple<Map, Point> tuple = WinUtils.LoadMap("Content/SampleFloor.lrmap");
             Map = tuple.Item1;
-            Player = new Player(tuple.Item2);
-            Player.SetHero(GraphicsDevice, 1 / 250f);
-            Player.Hero.Skeleton.FindSlot("girl_sword").Attachment = null;
-            Instances.Add(new FirstComp(Player.GridPosition + new Point(29, 0), GraphicsDevice));
-            Instances.Add(new SecondComp(Player.GridPosition + new Point(5, 0), GraphicsDevice));
+            Player = new Player(Map, tuple.Item2 + new Point(4, 1), GraphicsDevice);
+            Instances.Add(new FirstComp(Player.Position.ToPoint() + new Point(25, -1), GraphicsDevice));
+            Instances.Add(new SecondComp(Player.Position.ToPoint() + new Point(1, -1), GraphicsDevice));
             SimpleUtils.Init(GraphicsDevice);
             // TODO: Renders will be used for more fust drawing of the background... Later
             Renders = new RenderTarget2D[4];
@@ -99,18 +97,18 @@ namespace LightRise.Main {
             SpineInstance = new SpineObject(GraphicsDevice, "Sample", 1, new Vector2(20, 10));
             HackFont = Content.Load<SpriteFont>("HackFont");
             Terminal = Content.Load<Texture2D>("Terminal");
+            Back = Content.Load<Texture2D>("SampleFloorBG");
             FirstHackScreen = new FirstHack(HackFont, SpriteBatch, Terminal, Instances[0] as Comp);
             FirstHack.Items = Player.Items;
             SecondHackScreen = new SecondHack(HackFont, SpriteBatch, Terminal, Instances[1] as Comp);
             SecondHack.Items = Player.Items;
-            Back = Content.Load<Texture2D>("SampleFloorBG");
             Texture2D doorText = Content.Load<Texture2D>("door");
             Texture2D computerTex = Content.Load<Texture2D>("Computer");
             (Instances[0] as Comp).texture = computerTex;
             (Instances[1] as Comp).texture = computerTex;
-            Door1 = new Door(doorText, Player.GridPosition + new Point(26, -1), Instances[0] as Comp, Map);
-            Door2 = new Door(doorText, Player.GridPosition + new Point(3, -1), Instances[1] as Comp, Map);
-            Player.pick = Content.Load<SoundEffect>("Pick");
+            Door1 = new Door(doorText, Player.Position.ToPoint() + new Point(22, -2), Instances[0] as Comp, Map);
+            Door2 = new Door(doorText, Player.Position.ToPoint() + new Point(-1, -2), Instances[1] as Comp, Map);
+            Player.Pick = Content.Load<SoundEffect>("Pick");
             (Instances[0] as Comp).Allowed = true;
             script1 = delegate ()
             {
@@ -125,12 +123,12 @@ namespace LightRise.Main {
                 Finish = true;
                 finishColor.A = 0;
             };
-            Player.GridPosition += new Point(4, 0);
+            //Player.GridPosition += new Point(4, 0);
             mainMenu = new MainMenu(Content.Load<Texture2D>("mainMenu"));
             MediaPlayer.Play(Content.Load<Song>("Music"));
             MediaPlayer.Volume = 0.6f;
             MediaPlayer.IsRepeating = true;
-            // TODO: use this.Content to load your game content here
+            // TODO: use this.Content to load your game content here*/
         }
 
         /// <summary>
@@ -154,24 +152,26 @@ namespace LightRise.Main {
                 if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed /*|| State.Keyboard.IsKeyDown(Keys.Escape)*/)
                     Exit();
 
-                float cam_spd = 0.1f;
-                float dx = (State.Keyboard.IsKeyDown(Keys.Right) ? cam_spd : 0) - (State.Keyboard.IsKeyDown(Keys.Left) ? cam_spd : 0);
-                float dy = (State.Keyboard.IsKeyDown(Keys.Down) ? cam_spd : 0) - (State.Keyboard.IsKeyDown(Keys.Up) ? cam_spd : 0);
-                Cam.Position = new Vector2(Cam.Position.X + dx, Cam.Position.Y + dy);
-                Player.Hero.Update(gameTime);
-
+                //float cam_spd = 0.1f;
+                /*float dx = (State.Keyboard.IsKeyDown(Keys.Right) ? cam_spd : 0) - (State.Keyboard.IsKeyDown(Keys.Left) ? cam_spd : 0);
+                float dy = (State.Keyboard.IsKeyDown(Keys.Down) ? cam_spd : 0) - (State.Keyboard.IsKeyDown(Keys.Up) ? cam_spd : 0);*/
+                //Cam.Position = new Vector2(Cam.Position.X + dx, Cam.Position.Y + dy);
                 Player.Step(State);
-                if (Player.GridPosition.X > 38 && script1 != null)
+                Player.Update(gameTime);
+                /*Player.Hero.Update(gameTime);
+
+                Player.Step(State);*/
+                if (Player.Position.X > 40 && script1 != null)
                 {
                     script1();
                     script1 = null;
                 }
-                if (Player.GridPosition.X < 12 && script3 != null)
+                if (Player.Position.X < 12 && Player.Position.Y < 11 && script3 != null)
                 {
                     script3();
                     script3 = null;
                 }
-                Cam.Position = Player.Position - Size.ToVector2() / Cam.Scale / 2f;
+                //Cam.Position = Player.Position - Size.ToVector2() / Cam.Scale / 2f;
                 if (HackScreen != null)
                     HackScreen.Update(gameTime, State);
 

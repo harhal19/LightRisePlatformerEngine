@@ -29,6 +29,17 @@ namespace LightRise.BaseClasses {
             set { Grid[point.X][point.Y] = value; }
         }
 
+        public static int Round(float a)
+        {
+            int rounded = (int)a;
+            return (Math.Abs(a - (int)a) < 0.5f) ? rounded : rounded + 1;
+        }
+
+        public static Point Round(Vector2 a)
+        {
+            return new Point(Round(a.X), Round(a.Y));
+        }
+
         public Map(UInt32 width, UInt32 height) : this(new Point((int)width, (int)height)) {
 
         }
