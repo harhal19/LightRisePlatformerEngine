@@ -21,13 +21,13 @@ namespace LightRise.BaseClasses
             map[new Point(pos.X, pos.Y + 2)] = Map.WALL;
             controller.AccessAllowed += delegate ()
             {
-                map[pos] = Map.WALL;
+                map[pos] = Map.EMPTY;
                 map[new Point(pos.X, pos.Y + 1)] = Map.EMPTY;
                 map[new Point(pos.X, pos.Y + 2)] = Map.EMPTY;
             };
             controller.AccessDenied += delegate ()
             {
-                map[pos] = Map.EMPTY;
+                map[pos] = Map.WALL;
                 map[new Point(pos.X, pos.Y + 1)] = Map.WALL;
                 map[new Point(pos.X, pos.Y + 2)] = Map.WALL;
             };

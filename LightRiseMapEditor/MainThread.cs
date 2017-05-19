@@ -124,6 +124,8 @@ namespace LightRise.MapEditor {
                 CurrentValue = Map.LEFT_SHELF;
             } else if (KeyboardState.IsKeyDown(Keys.D3)) {
                 CurrentValue = Map.RIGHT_SHELF;
+            } else if (KeyboardState.IsKeyDown(Keys.D4)) {
+                CurrentValue = Map.LADDER;
             } else if (KeyboardState.IsKeyDown(Keys.Tab)) {
                 CurrentValue = Map.EMPTY;
             } else if (KeyboardState.IsKeyDown(Keys.OemTilde)) {

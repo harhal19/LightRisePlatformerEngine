@@ -11,34 +11,37 @@ namespace LightRise.BaseClasses
     public class Character
     {
         Map World;
-        public Vector2 Size { get; protected set; }
-        public Vector2 Position { get; protected set; }
-        /*public Rectangle GridRectangle
+        Vector2 size;
+        public Vector2 Size
         {
-            get {
-                return new Rectangle((Position - new Vector2(0, Size.Y - 1)).ToPoint(), (Size - Vector2.One).ToPoint());
+            get
+            {
+                if (crouching)
+                    return new Vector2(size.X, size.Y * 0.5f);
+                else
+                    return size;
             }
+            protected set { size = value; }
         }
-        public Rectangle GetCollisionRectangle(GameTime gameTime)
-        {
-            float realLinearSpeed = LinearSpeed * gameTime.ElapsedGameTime.Milliseconds / 1000f;
-            float realFallingSpeed = FallingSpeed * gameTime.ElapsedGameTime.Milliseconds / 1000f;
-            Vector2 collisionPosition = Position - new Vector2(0, Size.Y) + new Vector2(realLinearSpeed < 0 ? realLinearSpeed : 0, realFallingSpeed < 0 ? -realFallingSpeed : 0);
-            /*if (realLinearSpeed > 0 && (realLinearSpeed - (int)realLinearSpeed != 0)) realLinearSpeed++;
-            if (realLinearSpeed > 0 && (realLinearSpeed - (int)realLinearSpeed != 0)) realLinearSpeed = -realLinearSpeed + 1;
-            if (realFallingSpeed > 0 && (realFallingSpeed - (int)realFallingSpeed != 0)) realFallingSpeed = realFallingSpeed + 1;
-            if (realLinearSpeed > 0 && (realLinearSpeed - (int)realLinearSpeed != 0)) realLinearSpeed++;*//*
-            Vector2 collisionSize = Size - Vector2.One + new Vector2(Math.Abs(realLinearSpeed), Math.Abs(realFallingSpeed));
-            return new Rectangle(collisionPosition.ToPoint(), collisionSize.ToPoint());
-        }*/
+        public Vector2 Position { get; protected set; }
         public float LinearSpeed { get; protected set; }
         float LinearAxeleration;
-        float LinearMaxSpeed;
+        float LinearMaxSpeed
+        {
+            get
+            {
+                if (crouching)
+                    return linearMaxSpeed * 0.5f;
+                else
+                    return linearMaxSpeed;
+            }
+            set { linearMaxSpeed = value; }
+        }
+        float linearMaxSpeed;
         float Gravity;
         public float FallingSpeed { get; protected set; }
         float FallingMaxSpeed;
         float JumpAxeleration;
-        public bool UseGravity = true;
         const float COLLIZION_RANGE = 1f;
 
         public Character(Map world, Vector2 position, Vector2 size, float linearAxeleration, float linearMaxSpeed, float gravity, float fallingMaxSpeed, float jumpAxeleration)
@@ -51,161 +54,524 @@ namespace LightRise.BaseClasses
             Gravity = gravity;
             FallingMaxSpeed = fallingMaxSpeed;
             JumpAxeleration = jumpAxeleration;
+            CurrentUpdater = FallUpdater;
+            CurrentHorisontalUpdater = WalkUpdater;
         }
 
-        public virtual void Stop()
+        protected bool toJump;
+        protected bool toCrouch;
+        protected bool toLeft;
+        protected bool toRight;
+        protected bool toUse;
+        protected bool toUp;
+        protected bool toDown;
+
+        public virtual void Jump()   { toJump = true; }
+        public virtual void Crouch() { toCrouch = true; }
+        public virtual void Left()   { toLeft = true; }
+        public virtual void Right()  { toRight = true; }
+        public virtual void Use()    { toUse = true; }
+        public virtual void Up()     { toUp = true; }
+        public virtual void Down()   { toDown = true; }
+
+        protected delegate void Updater(float ms);
+        Updater CurrentUpdater;
+        Updater CurrentHorisontalUpdater;
+
+        protected bool crouching;
+
+        private bool takeRoof(float realFallingSpeed)
         {
-            //if (LinearSpeed < 0)
-            {
-                LinearSpeed += LinearAxeleration;
-                if (LinearSpeed > 0)
-                    LinearSpeed = 0;
-            }
-            //if (LinearSpeed > 0)
-            {
-                LinearSpeed -= LinearAxeleration;
-                if (LinearSpeed < 0)
-                    LinearSpeed = 0;
-            }
+            uint startX = (uint)Map.Round(Position.X);
+            uint endX = (uint)Map.Round(Position.X + Size.X - 1);
+            uint startY = (uint)Map.Round(Position.Y - (Size.Y - 1));
+            uint endY = (uint)Map.Round(Position.Y - (Size.Y - 1) + realFallingSpeed - COLLIZION_RANGE * 0.5f);
+            for (uint j = startY; j >= endY; j--)
+                for (uint i = startX; i <= endX; i = i + 1)
+                    if (World[i, j] == Map.WALL)
+                        return true;
+            return false;
         }
 
-        public virtual void Left()
+        private bool takeGround(float realFallingSpeed)
         {
-            //if (FallingSpeed == 0)
-            {
-                LinearSpeed -= LinearAxeleration;
-                if (LinearSpeed < -LinearMaxSpeed)
-                    LinearSpeed = -LinearMaxSpeed;
-            }
+            uint startX = (uint)Map.Round(Position.X);
+            uint endX = (uint)Map.Round(Position.X + Size.X - 1);
+            uint startY = (uint)Map.Round(Position.Y);
+            uint endY = (uint)Map.Round(Position.Y + realFallingSpeed + COLLIZION_RANGE * 0.5f);
+            for (uint j = startY; j <= endY; j++)
+                for (uint i = startX; i <= endX; i = i + 1)
+                    if (World[i, j] >= Map.WALL && World[i, j] < Map.LADDER)
+                        return true;
+            return false;
         }
 
-        public virtual void Right()
+        private bool takeShelf()
         {
-            //if (FallingSpeed == 0)
-            {
-                LinearSpeed += LinearAxeleration;
-                if (LinearSpeed > LinearMaxSpeed)
-                    LinearSpeed = LinearMaxSpeed;
-            }
+            uint startX = (uint)Map.Round(Position.X);
+            uint endX = (uint)Map.Round(Position.X + Size.X - 1);
+            uint startY = (uint)Map.Round(Position.Y - (Size.Y / 2 - 1) - COLLIZION_RANGE * 0.5f);
+            uint endY = (uint)Map.Round(Position.Y /*- (Size.Y / 2 - 1)*/ + COLLIZION_RANGE * 0.5f);
+            for (uint j = startY; j <= endY; j++)
+                for (uint i = startX; i <= endX; i = i + 1)
+                    if (World[i, j] == Map.LEFT_SHELF || 
+                        World[i, j] == Map.RIGHT_SHELF)
+                        return true;
+            return false;
         }
 
-        public virtual void Jump()
+        private bool takeLadder()
         {
-            if (OnFloor())
-            {
-                FallingSpeed = -JumpAxeleration;
-            }
+            uint startX = (uint)Map.Round(Position.X - COLLIZION_RANGE * 0.5f);
+            uint endX = (uint)Map.Round(Position.X + (Size.X - 1) + COLLIZION_RANGE * 0.5f);
+            uint startY = (uint)Map.Round(Position.Y - (Size.Y - 1));
+            uint endY = (uint)Map.Round(Position.Y);
+            for (uint j = startY; j <= endY; j++)
+                for (uint i = startX; i <= endX; i = i + 1)
+                    if (World[i, j] == Map.LADDER)
+                        return true;
+            return false;
         }
 
-        public virtual void TouchDown()
+        private bool takeLadderBottom()
         {
-            FallingSpeed = 0;
-        }
-
-        public virtual bool BrickOnTop()
-        {
-            for (uint i = (uint)Map.Round(Position.X - COLLIZION_RANGE * 0.4f); i <= (uint)Map.Round(Position.X + Size.X - 1 + COLLIZION_RANGE * 0.4f); i++)
-                if (World[i, (uint)Map.Round(Position.Y - (Size.Y - 1)) - 1] != Map.EMPTY)
+            uint startX = (uint)Map.Round(Position.X - COLLIZION_RANGE * 0.5f);
+            uint endX = (uint)Map.Round(Position.X + (Size.X - 1) + COLLIZION_RANGE * 0.5f);
+            uint Y = (uint)Map.Round(Position.Y + 1);
+            for (uint i = startX; i <= endX; i = i + 1)
+                if (World[i, Y] == Map.LADDER)
                     return true;
             return false;
         }
 
-        public virtual uint FloorBottom()
+        //1 Падает
+        protected virtual void FallUpdater(float ms)
         {
-            for (uint i = (uint)Map.Round(Position.X - COLLIZION_RANGE * 0.4f); i <= (uint)Map.Round(Position.X + Size.X - 1 + COLLIZION_RANGE * 0.4f); i++)
-                if (World[i, (uint)Map.Round(Position.Y) + 1] == Map.WALL)
-                    return Map.WALL;
-            for (uint i = (uint)Map.Round(Position.X - COLLIZION_RANGE * 0.4f); i <= (uint)Map.Round(Position.X + Size.X - 1 + COLLIZION_RANGE * 0.4f); i++)
-                if (World[i, (uint)Map.Round(Position.Y) + 1] != Map.EMPTY)
-                    return World[i, (uint)Map.Round(Position.Y) + 1];
-            return Map.EMPTY;
+            float realFallingSpeed = FallingSpeed * ms;
+            if (realFallingSpeed < 0) //Если скорость вниз отрицательна (прыжок, взлёт) искать потолок
+            {
+                if (takeRoof(realFallingSpeed)) //Если сверху потолок - падать
+                {
+                    CurrentUpdater = TouchRoofUpdater;
+                    return;
+                }
+
+            }
+            else
+            {
+                if (takeGround(realFallingSpeed)) //Если снизу пол - приземлится
+                {
+                    CurrentUpdater = LandUpdater;
+                    return;
+                }
+                if (takeShelf()) //Если балкон - зацепится
+                {
+                    CurrentUpdater = ClingUpdater;
+                    return;
+                }
+                if (takeLadder() && (toUp || toDown)) //Если лестница и [Вверх] или [Вниз] - хвататься за лестницу
+                {
+                    CurrentUpdater = LadderCatchUpdater;
+                    return;
+                }
+            }
+            
+            //Иначе падать вниз
+            Position += Vector2.UnitY * realFallingSpeed;
+            if (FallingSpeed < FallingMaxSpeed)
+            {
+                FallingSpeed += Gravity;
+                if (FallingSpeed > FallingMaxSpeed) FallingSpeed = FallingMaxSpeed;
+            }
+            CurrentHorisontalUpdater(ms);
         }
 
-        public virtual bool OnFloor()
+        //2 Цепляется (Scripted)
+        protected virtual void ClingUpdater(float ms)
         {
-            return FloorBottom() != Map.EMPTY;
+            uint startX = (uint)Map.Round(Position.X);
+            uint endX = (uint)Map.Round(Position.X + Size.X - 1);
+            uint startY = (uint)Map.Round(Position.Y - (Size.Y - 1) - COLLIZION_RANGE * 0.5f);
+            uint endY = (uint)Map.Round(Position.Y - (Size.Y / 2 - 1) + COLLIZION_RANGE * 0.5f);
+            for (uint j = startY; j <= endY; j++)
+                for (uint i = startX; i <= endX; i = i + 1)
+                    if (World[i, j] >= Map.LEFT_SHELF && World[i, j] <= Map.RIGHT_SHELF)
+                    {
+                        Position = new Vector2(World[i, j] == Map.LEFT_SHELF ? i : i - (Size.X - 1), j + (Size.Y - 1) - 1 + COLLIZION_RANGE);
+                        CurrentUpdater = HangUpdater;
+                        return;
+                    }
         }
 
-        public virtual void Use()
+        //3 Использует (Scripted)
+        protected virtual void UseUpdater(float ms)
         {
+            CurrentUpdater = GoUpdater;
         }
 
-        public virtual void Fall()
+        //4 Прыгает (Scripted)
+        protected virtual void JumpUpdater(float ms)
         {
-            if (UseGravity && FallingSpeed < FallingMaxSpeed)
+            FallingSpeed = -JumpAxeleration;
+            CurrentUpdater = FallUpdater;
+        }
+
+        //5 Висит
+        protected virtual void HangUpdater(float ms)
+        {
+            if (toUp) //Если [Вверх] - залезть
+            {
+                CurrentUpdater = JumpUpdater;// RiseUpdater;
+                return;
+            }
+            if (toDown) //Если [Вниз] - спрыгнуть
+            {
+                CurrentUpdater = ComeDownUpdater;
+                return;
+            }
+        }
+
+        //6 Стоит/Крадётся
+        protected virtual void GoUpdater(float ms)
+        {
+            //Если [Использовать] - использовать
+            
+            if (toJump) //Если [Прыжок] - прыгнуть
+            {
+                CurrentUpdater = JumpUpdater;
+                return;
+            }
+            if (takeLadderBottom() && toDown) //Если [Вниз] и снизу лестница - спуститься на лестницу
+            {
+                CurrentUpdater = LadderEnterDownUpdater;
+            }
+            
+            if (takeLadder() && toUp) //Если [Вверх] и рядом лестница - подняться на лестницу
+            {
+                CurrentUpdater = LadderEnterUpUpdater;
+            }
+            //Ходьба
+            CurrentHorisontalUpdater(ms);
+            //Падение
+            if (!takeGround(ms) && !takeLadderBottom())
+            {
+                CurrentUpdater = FallUpdater;
+                return;
+            }
+
+        }
+
+        //7 Залазит (Scripted)
+        protected virtual void RiseUpdater(float ms)
+        {
+            uint startX = (uint)Map.Round(Position.X);
+            uint endX = (uint)Map.Round(Position.X + Size.X - 1);
+            uint startY = (uint)Map.Round(Position.Y - (Size.Y - 1));
+            uint endY = (uint)Map.Round(Position.Y);
+            for (uint j = startY; j <= endY; j++)
+                for (uint i = startX; i <= endX; i = i + 1)
+                    if (World[i, j] >= Map.LEFT_SHELF && World[i, j] <= Map.RIGHT_SHELF)
+                    {
+                        Position = new Vector2(Position.X, j - COLLIZION_RANGE);
+                        CurrentUpdater = GoUpdater;
+                        return;
+                    }
+        }
+
+        //8 Взбирается на лестницу (Scripted)
+        protected virtual void LadderEnterUpUpdater(float ms)
+        {
+            uint startX = (uint)Map.Round(Position.X - COLLIZION_RANGE * 0.5f);
+            uint endX = (uint)Map.Round(Position.X + Size.X - 1 + COLLIZION_RANGE * 0.5f);
+            uint startY = (uint)Map.Round(Position.Y - (Size.Y - 1));
+            uint endY = (uint)Map.Round(Position.Y);
+            for (uint j = startY; j <= endY; j++)
+                for (uint i = startX; i <= endX; i = i + 1)
+                    if (World[i, j] == Map.LADDER)
+                    {
+                        while (World[i - 1, j] == Map.LADDER) i--;
+                        Position = new Vector2(i, Position.Y);
+                        CurrentUpdater = LadderGoUpdater;
+                        return;
+                    }
+            CurrentUpdater = GoUpdater;
+        }
+
+        //9 Спускается на лестницу (Scripted)
+        protected virtual void LadderEnterDownUpdater(float ms)
+        {
+            uint startX = (uint)Map.Round(Position.X - COLLIZION_RANGE * 0.5f);
+            uint endX = (uint)Map.Round(Position.X + (Size.X - 1) + COLLIZION_RANGE * 0.5f);
+            uint Y = (uint)Map.Round(Position.Y + 1);
+            for (uint i = startX; i <= endX; i = i + 1)
+                if (World[i, Y] == Map.LADDER)
+                {
+                    Position = new Vector2(i, Y);
+                    CurrentUpdater = LadderGoUpdater;
+                    return;
+                }
+        }
+
+        //10 Хватается за лестницу (Scripted)
+        protected virtual void LadderCatchUpdater(float ms)
+        {
+            uint startX = (uint)Map.Round(Position.X - COLLIZION_RANGE * 0.5f);
+            uint endX = (uint)Map.Round(Position.X + Size.X - 1 + COLLIZION_RANGE * 0.5f);
+            uint startY = (uint)Map.Round(Position.Y - (Size.Y - 1));
+            uint endY = (uint)Map.Round(Position.Y);
+            for (uint j = startY; j <= endY; j++)
+                for (uint i = startX; i <= endX; i = i + 1)
+                    if (World[i, j] == Map.LADDER)
+                    {
+                        while (World[i - 1, j] == Map.LADDER) i--;
+                        Position = new Vector2(i, Position.Y);
+                        CurrentUpdater = LadderGoUpdater;
+                        return;
+                    }
+        }
+
+        //11 Лезет по лестнице
+        protected virtual void LadderGoUpdater(float ms)
+        {
+            if (toUp) //Если [Вверх]
+            {
+                FallingSpeed -= LinearAxeleration;
+                if (FallingSpeed < LinearMaxSpeed)
+                    FallingSpeed = -LinearMaxSpeed;
+            }
+            else if (toDown) //Если [Низ]
+            {
+                FallingSpeed += LinearAxeleration;
+                if (FallingSpeed > LinearMaxSpeed)
+                    FallingSpeed = LinearMaxSpeed;
+            }
+            else
+            {
+                FallingSpeed = 0;
+            }
+            if (toJump) //Если [Прыжок] - падать
+            {
+                CurrentUpdater = ComeDownUpdater;
+                return;
+            }
+            float realFallingSpeed = FallingSpeed * ms;
+            if (realFallingSpeed < 0) //Если скорость вниз отрицательна (прыжок, взлёт) искать потолок
+            {
+                if (takeRoof(realFallingSpeed)) //Если сверху потолок - остановиться
+                {
+                    FallingSpeed = 0;
+                    return;
+                }
+                if (!takeLadder()) //Если нет лестницы - падать
+                {
+                    CurrentUpdater = LadderLeaveUpUpdater;
+                    return;
+                }
+            }
+            else
+            {
+                if (takeGround(realFallingSpeed)) //Если снизу пол - приземлится
+                {
+                    CurrentUpdater = LadderLeaveDownUpdater;
+                    return;
+                }
+                if (!takeLadder()) //Если нет лестницы - падать
+                {
+                    CurrentUpdater = ComeDownUpdater;
+                    return;
+                }
+            }
+
+            //Иначе падать вниз
+            Position += Vector2.UnitY * realFallingSpeed;
+            if (FallingSpeed < FallingMaxSpeed)
             {
                 FallingSpeed += Gravity;
                 if (FallingSpeed > FallingMaxSpeed) FallingSpeed = FallingMaxSpeed;
             }
         }
 
-        public virtual bool BlockIsFallable(uint Block)
+        //12 Взбирается с лестницы (Scripted)
+        protected virtual void LadderLeaveUpUpdater(float ms)
         {
-            return Block != Map.WALL && (FallingSpeed < 0 || (Block != Map.LEFT_SHELF && Block != Map.RIGHT_SHELF));
+            uint X = (uint)Map.Round(Position.X);
+            uint Y = (uint)Map.Round(Position.Y);
+            while (World[X, Y] == Map.LADDER)
+                Y--;
+                Position = new Vector2(X, Y);
+                CurrentUpdater = GoUpdater;
+                return;
         }
 
-        public virtual bool BlockIsPassable(uint Block)
+        //13 Спускается с лестницы (Scripted)
+        protected virtual void LadderLeaveDownUpdater(float ms)
         {
-            return Block != Map.WALL;
+            CurrentUpdater = GoUpdater;
         }
+
+        //14 Приземлиться (Scripted)
+        protected virtual void LandUpdater(float ms)
+        {
+            float realFallingSpeed = FallingSpeed * ms;
+            uint startX = (uint)Map.Round(Position.X);
+            uint endX = (uint)Map.Round(Position.X + Size.X - 1);
+            uint startY = (uint)Map.Round(Position.Y);
+            uint endY = (uint)Map.Round(Position.Y + realFallingSpeed + COLLIZION_RANGE * 0.5f);
+            for (uint j = startY; j <= endY; j++)
+                for (uint i = startX; i <= endX; i = i + 1)
+                    if (World[i, j] >= Map.WALL && World[i, j] < Map.LADDER)
+                    {
+                        FallingSpeed = 0;
+                        Position = new Vector2(Position.X, j - COLLIZION_RANGE);
+                        CurrentUpdater = GoUpdater;
+                        return;
+                    }
+        }
+
+        //15 Спрыгнуть (Scripted)
+        protected virtual void ComeDownUpdater(float ms)
+        {
+            CurrentUpdater = FallUpdater;
+        }
+
+        //16 Коснуться потолка (Scripted)
+        protected virtual void TouchRoofUpdater(float ms)
+        {
+            float realFallingSpeed = FallingSpeed * ms;
+            uint startX = (uint)Map.Round(Position.X);
+            uint endX = (uint)Map.Round(Position.X + Size.X - 1);
+            uint startY = (uint)Map.Round(Position.Y - (Size.Y - 1));
+            uint endY = (uint)Map.Round(Position.Y - (Size.Y - 1) + realFallingSpeed - COLLIZION_RANGE * 0.5f);
+            for (uint j = startY; j >= endY; j--)
+                for (uint i = startX; i <= endX; i = i + 1)
+                    if (World[i, j] == Map.WALL)
+                    {
+                        FallingSpeed = 0;
+                        Position = new Vector2(Position.X, j + (Size.Y - 1) + COLLIZION_RANGE);
+                        CurrentUpdater = FallUpdater;
+                        return;
+                    }
+        }
+
+        #region HorisontalUpdaters
+        protected virtual void CrouchUpdater(float ms)
+        {
+            crouching = !crouching;
+            CurrentHorisontalUpdater = WalkUpdater;
+        }
+
+        protected virtual void StopUpdater(float ms)
+        {
+            LinearSpeed = 0;
+            CurrentHorisontalUpdater = WalkUpdater;
+        }
+
+        // Коснуться стены (Scripted)
+        protected virtual void StayWithWallUpdater(float ms)
+        {
+            if (toCrouch)//Если [Присесть] - присесть/встать
+            {
+                CurrentHorisontalUpdater = CrouchUpdater;
+                return;
+            }
+            if (toLeft != toRight)
+            {
+                float realLinearSpeed = 0;
+                if (toLeft)
+                {
+                    LinearSpeed -= LinearAxeleration * ms;
+                    if (LinearSpeed < -LinearMaxSpeed)
+                        LinearSpeed = -LinearMaxSpeed;
+                }
+                else if (toRight)
+                {
+                    LinearSpeed += LinearAxeleration * ms;
+                    if (LinearSpeed > LinearMaxSpeed)
+                        LinearSpeed = LinearMaxSpeed;
+                }
+                realLinearSpeed = LinearSpeed * ms;
+                uint startX = realLinearSpeed < 0 ? (uint)Map.Round(Position.X) : (uint)Map.Round(Position.X + Size.X - 1);
+                uint endX = realLinearSpeed < 0 ? (uint)Map.Round(Position.X + realLinearSpeed - COLLIZION_RANGE * 0.5f) : (uint)Map.Round(Position.X + Size.X - 1 + realLinearSpeed + COLLIZION_RANGE * 0.5f);
+                uint startY = (uint)Map.Round(Position.Y - (Size.Y - 1));
+                uint endY = (uint)Map.Round(Position.Y);
+                for (uint i = startX; (realLinearSpeed < 0 ? i >= endX : i <= endX); i = realLinearSpeed < 0 ? i - 1 : i + 1)
+                    for (uint j = startY; j <= endY; j++)
+                        if (World[i, j] == Map.WALL)
+                        {
+                            LinearSpeed = 0;
+                            Position = new Vector2(realLinearSpeed < 0 ? i + COLLIZION_RANGE : i + Size.X - 1 - COLLIZION_RANGE, Position.Y);
+                            return;
+                        }
+                Position += Vector2.UnitX * realLinearSpeed;
+                CurrentHorisontalUpdater = LeaveTheWallUpdater;
+            }
+        }
+
+        protected virtual void TouchTheWallUpdater(float ms)
+        {
+            CurrentHorisontalUpdater = StayWithWallUpdater;
+        }
+
+        protected virtual void LeaveTheWallUpdater(float ms)
+        {
+            CurrentHorisontalUpdater = WalkUpdater;
+        }
+
+        protected virtual void WalkUpdater(float ms)
+        {
+            if (toCrouch)//Если [Присесть] - присесть/встать
+            {
+                CurrentHorisontalUpdater = CrouchUpdater;
+                return;
+            }
+            if (toLeft != toRight)
+            {
+                float realLinearSpeed = 0;
+                if (toLeft)
+                {
+                    LinearSpeed -= LinearAxeleration * ms;
+                    if (LinearSpeed < -LinearMaxSpeed)
+                        LinearSpeed = -LinearMaxSpeed;
+                }
+                else if (toRight)
+                {
+                    LinearSpeed += LinearAxeleration * ms;
+                    if (LinearSpeed > LinearMaxSpeed)
+                        LinearSpeed = LinearMaxSpeed;
+                }
+                realLinearSpeed = LinearSpeed * ms;
+                uint startX = realLinearSpeed < 0 ? (uint)Map.Round(Position.X) : (uint)Map.Round(Position.X + Size.X - 1);
+                uint endX = realLinearSpeed < 0 ? (uint)Map.Round(Position.X + realLinearSpeed - COLLIZION_RANGE * 0.5f) : (uint)Map.Round(Position.X + Size.X - 1 + realLinearSpeed + COLLIZION_RANGE * 0.5f);
+                uint startY = (uint)Map.Round(Position.Y - (Size.Y - 1));
+                uint endY = (uint)Map.Round(Position.Y);
+                for (uint i = startX; (realLinearSpeed < 0 ? i >= endX : i <= endX); i = realLinearSpeed < 0 ? i - 1 : i + 1)
+                    for (uint j = startY; j <= endY; j++)
+                        if (World[i, j] == Map.WALL)
+                        {
+                            CurrentHorisontalUpdater = TouchTheWallUpdater;
+                            return;
+                        }
+                Position += Vector2.UnitX * realLinearSpeed;
+            }
+            else
+            {
+                if (LinearSpeed != 0)
+                    CurrentHorisontalUpdater = StopUpdater;
+            }
+        }
+        #endregion
 
         public virtual void Update(GameTime gameTime)
         {
-            float realLinearSpeed = LinearSpeed * gameTime.ElapsedGameTime.Milliseconds / 1000f;
-            float realFallingSpeed = FallingSpeed * gameTime.ElapsedGameTime.Milliseconds / 1000f;
-            uint Obstacle = Map.EMPTY;/*
-            for (uint i = (uint)GridRectangle.Bottom; i < (uint)CollisionRectangle.Bottom && Obstacle == Map.EMPTY; i++)
-            {
-                float diagFactor = (int)FallingSpeed / (float)(i - GridRectangle.Bottom);
-                for (uint j = (uint)CollisionRectangle.Left; i < (uint)CollisionRectangle.Right && Obstacle == Map.EMPTY; j++)
-                {
-                    if (World[j, i] == Map.WALL) Obstacle = Map.WALL;
-                    Position += Vector2.UnitX * (LinearSpeed * gameTime.ElapsedGameTime.Milliseconds / 1000f);
-                }
-                for (uint j = (uint)Position.X; i < (uint)(Position.X + Size.X) && Obstacle == Map.EMPTY; j++)
-                    if (World[i, j] == Map.RIGHT_SHELF || World[i, j] == Map.LEFT_SHELF) Obstacle = World[i, j];
-            }
-            if (Obstacle != Map.EMPTY)
-                FallingSpeed = 0;
-        */
-            if (realLinearSpeed != 0)
-            {
-                uint startX = realLinearSpeed < 0 ? (uint)Map.Round(Position.X) : (uint)Map.Round(Position.X + Size.X - 1);
-                uint endX = realLinearSpeed < 0 ? (uint)Map.Round(Position.X + realLinearSpeed - COLLIZION_RANGE * 0.5f) : (uint)Map.Round(Position.X + Size.X - 1 + realLinearSpeed + COLLIZION_RANGE * 0.5f);
-                uint startY = realFallingSpeed < 0 ? (uint)Map.Round(Position.Y) : (uint)Map.Round(Position.Y - (Size.Y - 1));
-                uint endY = realFallingSpeed < 0 ? (uint)Map.Round(Position.Y - (Size.Y - 1) + realFallingSpeed) : (uint)Map.Round(Position.Y + realFallingSpeed);
-                for (uint i = startX; (realLinearSpeed < 0 ? i >= endX : i <= endX) && Obstacle == Map.EMPTY; i = realLinearSpeed < 0 ? i - 1 : i + 1)
-                    for (uint j = startY; (realFallingSpeed < 0 ? j >= endY : j <= endY) && Obstacle == Map.EMPTY; j = realFallingSpeed < 0 ? j - 1 : j + 1)
-                        if (!BlockIsPassable(World[i, j]))
-                        {
-                            Obstacle = Map.WALL;
-                            Position = new Vector2(realLinearSpeed < 0 ? i + COLLIZION_RANGE : i + Size.X - 1 - COLLIZION_RANGE, Position.Y);
-                            LinearSpeed = 0;
-                        }
-                if (Obstacle == Map.EMPTY)
-                    Position += Vector2.UnitX * realLinearSpeed;
-            }
-            Obstacle = Map.EMPTY;
-            if (!OnFloor())
-                Fall();
-            Obstacle = Map.EMPTY;
-            if (realFallingSpeed != 0)
-            {
-                uint startX = realLinearSpeed < 0 ? (uint)Map.Round(Position.X) : (uint)Map.Round(Position.X + Size.X - 1);
-                uint endX = realLinearSpeed < 0 ? (uint)Map.Round(Position.X + realLinearSpeed) : (uint)Map.Round(Position.X + Size.X - 1 + realLinearSpeed);
-                uint startY = realFallingSpeed < 0 ? (uint)Map.Round(Position.Y - (Size.Y - 1)) : (uint)Map.Round(Position.Y);
-                uint endY = realFallingSpeed < 0 ? (uint)Map.Round(Position.Y - (Size.Y - 1) + realFallingSpeed - COLLIZION_RANGE * 0.5f) : (uint)Map.Round(Position.Y + realFallingSpeed + COLLIZION_RANGE * 0.5f);
-                for (uint j = startY; (realFallingSpeed < 0 ? j >= endY : j <= endY) && Obstacle == Map.EMPTY; j = realFallingSpeed < 0 ? j - 1 : j + 1)
-                    for (uint i = startX; (realLinearSpeed < 0 ? i >= endX : i <= endX) && Obstacle == Map.EMPTY; i = realLinearSpeed < 0 ? i - 1 : i + 1)
-                        if (!BlockIsFallable(World[i, j]))
-                        {
-                            Obstacle = Map.WALL;
-                            Position = new Vector2(Position.X, realFallingSpeed < 0 ? j + (Size.Y - 1) + COLLIZION_RANGE : j  - COLLIZION_RANGE);
-                            TouchDown();
-                        }
-                if (Obstacle == Map.EMPTY && UseGravity)
-                    Position += Vector2.UnitY * realFallingSpeed;
-            }
+            if (CurrentUpdater != null)
+                CurrentUpdater(gameTime.ElapsedGameTime.Milliseconds / 1000f);
+            toJump = false;
+            toCrouch = false;
+            toLeft = false;
+            toRight = false;
+            toUse = false;
+            toUp = false;
+            toDown = false;
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, Camera camera)

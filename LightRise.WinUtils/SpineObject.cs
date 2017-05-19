@@ -37,15 +37,17 @@ namespace LightRise.WinUtilsLib
             }
         }
 
-        public SpineObject(GraphicsDevice Graphics, string filename, float scale, Vector2 pos, string headSlot = "head")
+        public SpineObject(GraphicsDevice Graphics, string filename, float scale, Vector2 pos, string headSlot = "head", bool AbsolutePath = false)
         {
+            if (!AbsolutePath)
+                filename = "Content/" + filename;
             skeletonRenderer = new SkeletonMeshRenderer(Graphics);
             skeletonRenderer.PremultipliedAlpha = true;
-            Atlas atlas = new Atlas("Content/" + filename + ".atlas", new XnaTextureLoader(Graphics));
+            Atlas atlas = new Atlas(filename + ".atlas", new XnaTextureLoader(Graphics));
             SkeletonData skeletonData;
             SkeletonJson json = new SkeletonJson(atlas);
             json.Scale = scale;
-            skeletonData = json.ReadSkeletonData("Content/" + filename + ".json");
+            skeletonData = json.ReadSkeletonData(filename + ".json");
             skeleton = new Skeleton(skeletonData);
             AnimationStateData stateData = new AnimationStateData(skeleton.Data);
             state = new AnimationState(stateData);

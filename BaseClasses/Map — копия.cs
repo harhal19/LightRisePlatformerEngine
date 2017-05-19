@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System.Xml.Serialization;
 
 namespace LightRise.BaseClasses {
     public class Map {
@@ -14,8 +13,10 @@ namespace LightRise.BaseClasses {
         public const uint LEFT_SHELF = 2;
         public const uint RIGHT_SHELF = 3;
         public const uint LADDER = 4;
+        public const uint PLAYER = 5;
+        //public const uint INTERACTION = 6+;
 
-        private static readonly Color[ ] Colors = { Color.Red, Color.Blue, Color.Aqua, Color.Yellow, Color.White };
+        private static readonly Color[ ] Colors = { Color.Red, Color.Blue, Color.Aqua, Color.Yellow, Color.Magenta, Color.Green };
 
         public UInt32 Width { get { return _width; } }
         public UInt32 Height { get { return _height; } }
@@ -61,21 +62,30 @@ namespace LightRise.BaseClasses {
             Grid = SimpleUtils.Create2DArray(Width, Height, EMPTY);
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch, Camera cam)
-        {
+        // TODO: Delete this function when it is not needed for testing
+        public void Randomize( ) {
+            for (uint i = 0; i < Width; i++) {
+                for (uint j = 0; j < Height; j++) {
+                    Grid[i][j] = SimpleUtils.Choose(new Tuple<uint, float>[ ] {
+                        new Tuple<uint, float>(EMPTY, 5),
+                        new Tuple<uint, float>(WALL, 1),
+                        new Tuple<uint, float>(LEFT_SHELF, 2),
+                        new Tuple<uint, float>(RIGHT_SHELF, 2)});
+                }
+            }
+        }
+
+        public virtual void Draw(SpriteBatch spriteBatch, Camera cam) {
             for (UInt32
                 i = (UInt32)Math.Max(0, (Int32)Math.Floor(cam.Position.X)),
                 iTo = Math.Min(Width, (UInt32)Math.Ceiling(cam.Position.X + spriteBatch.GraphicsDevice.PresentationParameters.BackBufferWidth / cam.Scale.X));
-                i < iTo; i++)
-            {
+                i < iTo; i++) {
                 for (UInt32
                     j = (UInt32)Math.Max(0, (Int32)Math.Floor(cam.Position.Y)),
                     jTo = Math.Min(Height, (UInt32)Math.Ceiling(cam.Position.Y + spriteBatch.GraphicsDevice.PresentationParameters.BackBufferHeight / cam.Scale.Y));
-                    j < jTo; j++)
-                {
-                    if (this[i, j] != EMPTY)
-                    {
-                        spriteBatch.Draw(SimpleUtils.WhiteRect, new Rectangle(cam.WorldToWindow(new Vector2(i, j)), cam.Scale.CeilingToPoint()), Colors[this[i, j] - 1 < 4 ? this[i, j] - 1 : 4]);
+                    j < jTo; j++) {
+                    if (this[i, j] != EMPTY) {
+                        spriteBatch.Draw(SimpleUtils.WhiteRect, new Rectangle(cam.WorldToWindow(new Vector2(i, j)), cam.Scale.CeilingToPoint( )), Colors[this[i, j] - 1 < 5 ? this[i, j] - 1 : 6]);
                     }
                 }
             }

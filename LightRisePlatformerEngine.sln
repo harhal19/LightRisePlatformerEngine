@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightRise.BaseClasses", "Ba
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightRise.WinUtilsLib", "LightRise.WinUtils\LightRise.WinUtilsLib.csproj", "{2E75DFBA-28B0-4753-B483-D4F66324C383}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpineTester", "SpineTester\SpineTester.csproj", "{2762DA12-C538-4B6C-8594-B724518D5732}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,12 +22,14 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{886059C1-358F-4CE2-9660-E719419BE6AF}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{886059C1-358F-4CE2-9660-E719419BE6AF}.Debug|Any CPU.Build.0 = Debug|x86
 		{886059C1-358F-4CE2-9660-E719419BE6AF}.Debug|x86.ActiveCfg = Debug|x86
 		{886059C1-358F-4CE2-9660-E719419BE6AF}.Debug|x86.Build.0 = Debug|x86
 		{886059C1-358F-4CE2-9660-E719419BE6AF}.Release|Any CPU.ActiveCfg = Release|x86
 		{886059C1-358F-4CE2-9660-E719419BE6AF}.Release|x86.ActiveCfg = Release|x86
 		{886059C1-358F-4CE2-9660-E719419BE6AF}.Release|x86.Build.0 = Release|x86
 		{29E590BA-4CC4-48D4-ADBD-87B6B599DC01}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{29E590BA-4CC4-48D4-ADBD-87B6B599DC01}.Debug|Any CPU.Build.0 = Debug|x86
 		{29E590BA-4CC4-48D4-ADBD-87B6B599DC01}.Debug|x86.ActiveCfg = Debug|x86
 		{29E590BA-4CC4-48D4-ADBD-87B6B599DC01}.Debug|x86.Build.0 = Debug|x86
 		{29E590BA-4CC4-48D4-ADBD-87B6B599DC01}.Release|Any CPU.ActiveCfg = Release|x86
@@ -40,11 +44,19 @@ Global
 		{DFC53E31-B9B5-48CC-850B-F28656F7EA35}.Release|x86.ActiveCfg = Release|Any CPU
 		{DFC53E31-B9B5-48CC-850B-F28656F7EA35}.Release|x86.Build.0 = Release|Any CPU
 		{2E75DFBA-28B0-4753-B483-D4F66324C383}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{2E75DFBA-28B0-4753-B483-D4F66324C383}.Debug|Any CPU.Build.0 = Debug|x86
 		{2E75DFBA-28B0-4753-B483-D4F66324C383}.Debug|x86.ActiveCfg = Debug|x86
 		{2E75DFBA-28B0-4753-B483-D4F66324C383}.Debug|x86.Build.0 = Debug|x86
 		{2E75DFBA-28B0-4753-B483-D4F66324C383}.Release|Any CPU.ActiveCfg = Release|x86
 		{2E75DFBA-28B0-4753-B483-D4F66324C383}.Release|x86.ActiveCfg = Release|x86
 		{2E75DFBA-28B0-4753-B483-D4F66324C383}.Release|x86.Build.0 = Release|x86
+		{2762DA12-C538-4B6C-8594-B724518D5732}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{2762DA12-C538-4B6C-8594-B724518D5732}.Debug|Any CPU.Build.0 = Debug|x86
+		{2762DA12-C538-4B6C-8594-B724518D5732}.Debug|x86.ActiveCfg = Debug|x86
+		{2762DA12-C538-4B6C-8594-B724518D5732}.Debug|x86.Build.0 = Debug|x86
+		{2762DA12-C538-4B6C-8594-B724518D5732}.Release|Any CPU.ActiveCfg = Release|x86
+		{2762DA12-C538-4B6C-8594-B724518D5732}.Release|x86.ActiveCfg = Release|x86
+		{2762DA12-C538-4B6C-8594-B724518D5732}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
