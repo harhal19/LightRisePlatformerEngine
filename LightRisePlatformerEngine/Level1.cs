@@ -114,7 +114,7 @@ namespace LightRise.Main
             SpriteBatch.Begin();
             SpriteBatch.Draw(Back_2, new Rectangle(new Point(0 - 20), (new Vector2(1, 17f / 30f) * Graphics.PreferredBackBufferWidth * 1.3f).ToPoint()), Color.White);
             SpriteBatch.Draw(Back_1, new Rectangle(Cam.WorldToWindow(Cam.Position + Vector2.UnitX * Cam.Position.X * -0.2f + Vector2.UnitX * -3f), (new Vector2(1, 10f / 25f) * Graphics.PreferredBackBufferWidth * 2f).ToPoint()), Color.White);
-            SpriteBatch.Draw(Back_0, new Rectangle(Cam.WorldToWindow(new Vector2(-28.7f, -15.7f)), (new Point(196, 68).ToVector2() * Cam.Scale).ToPoint()), Color.White);
+            SpriteBatch.Draw(Back_0, new Rectangle(Cam.WorldToWindow(new Vector2(-28f, -15.7f)), (new Point(196, 68).ToVector2() * Cam.Scale).ToPoint()), Color.White);
 #if DEBUG
             Map.Draw(SpriteBatch, Cam);
 #endif

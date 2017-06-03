@@ -425,6 +425,7 @@ namespace LightRise.BaseClasses
         //11 Лезет по лестнице
         protected virtual void LadderGoUpdater(float ms)
         {
+            LinearSpeed = 0;
             if (toUp) //Если [Вверх]
             {
                 FallingSpeed -= LinearAxeleration;

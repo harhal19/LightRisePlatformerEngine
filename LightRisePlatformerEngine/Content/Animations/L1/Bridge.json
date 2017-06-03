@@ -1181,9 +1181,9 @@
   "ik": [ ],
   "events": 
   {
-    "EVE4": { "Int" },
-    "EVE2": { "Int" },
-    "EVE1": { "Int" },
-    "EVE3": { "Int" },
-    "EVE5": { "Int" }
+    "EVE4": { },
+    "EVE2": { },
+    "EVE1": { },
+    "EVE3": { },
+    "EVE5": { }
   }}
