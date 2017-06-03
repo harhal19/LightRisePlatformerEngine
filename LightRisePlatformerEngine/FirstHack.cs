@@ -39,9 +39,9 @@ namespace LightRise.Main {
 
             if (State.Keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape)) {
                 Computer.Allowed = (Words[2].textObject != null) ? Words[2].textObject.Text == "true" : false;
-                Program.MainThread.HackScreen = null;
+                //Program.MainThread.HackScreen = null;
                 Comp.inUse = false;
-                Program.MainThread.Player.Locked = false;
+                //Program.MainThread.Player.Locked = false;
             }
         }
 

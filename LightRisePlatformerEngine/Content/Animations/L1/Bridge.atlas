@@ -1,0 +1,19 @@
+bridge.png
+size: 0,0
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+q3rdsaefd
+  rotate: false
+  xy: 1 ,1
+  size: 1810 ,684
+  orig: 1810 ,684
+  offset: 0,0
+  index: -1
+231
+  rotate: false
+  xy: 1 ,687
+  size: 333 ,94
+  orig: 333 ,94
+  offset: 0,0
+  index: -1

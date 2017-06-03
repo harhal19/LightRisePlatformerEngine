@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System.Xml.Serialization;
 
 namespace LightRise.BaseClasses {
     public class Map {
@@ -182,5 +181,10 @@ namespace LightRise.BaseClasses {
             }
             return result;
         }
+
+        /*public static Map GenerateFromSerializer(LevelSerializer.MapSerializer serializer)
+        {
+
+        }*/
     }
 }

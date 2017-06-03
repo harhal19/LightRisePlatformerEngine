@@ -49,7 +49,14 @@ namespace LightRise.BaseClasses
 
         public void DrawOnCenter(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(Font, Text, Pos - (Font.MeasureString(Text) * Scale / 2) + offset, color, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
+            try
+            {
+                spriteBatch.DrawString(Font, Text, Pos - (Font.MeasureString(Text) * Scale / 2) + offset, color, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
     }
 }

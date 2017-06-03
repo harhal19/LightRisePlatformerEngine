@@ -17,7 +17,7 @@ namespace LightRise.Main {
 
         public override void Connect( ) {
             base.Connect( );
-            Program.MainThread.HackScreen = Program.MainThread.SecondHackScreen;//new FirstHack(Program.MainThread.HackFont, Program.MainThread.SpriteBatch, Program.MainThread.Terminal);
+            //Program.MainThread.HackScreen = Program.MainThread.SecondHackScreen;//new FirstHack(Program.MainThread.HackFont, Program.MainThread.SpriteBatch, Program.MainThread.Terminal);
 
         }
 

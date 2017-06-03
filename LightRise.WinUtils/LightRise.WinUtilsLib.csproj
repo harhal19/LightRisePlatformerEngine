@@ -79,6 +79,7 @@
     <Compile Include="CSharpSpine\TransformConstraint.cs" />
     <Compile Include="CSharpSpine\TransformConstraintData.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="LevelSerializer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpineObject.cs" />

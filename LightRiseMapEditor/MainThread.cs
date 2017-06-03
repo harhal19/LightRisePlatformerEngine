@@ -7,7 +7,6 @@ using LightRise.BaseClasses;
 using LightRise.WinUtilsLib;
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualBasic;
 
 namespace LightRise.MapEditor {
     /// <summary>
@@ -23,7 +22,7 @@ namespace LightRise.MapEditor {
 
         }
 
-        List<Interactive> ListOfInstances = new List<Interactive>( );
+        List<Interaction> ListOfInstances = new List<Interaction>( );
         GraphicsDeviceManager Graphics;
         SpriteBatch SpriteBatch;
         Texture2D Back;
@@ -47,6 +46,9 @@ namespace LightRise.MapEditor {
             IsMouseVisible = true;
             Mouse.WindowHandle = Window.Handle;
             Content.RootDirectory = "Content";
+            Graphics.PreferredBackBufferWidth = 1600;
+            Graphics.PreferredBackBufferHeight = 900;
+            Graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -62,7 +64,7 @@ namespace LightRise.MapEditor {
             for (uint x = 10; x <= 14; x++) {
                 Maps[0][0][x, 9] = Map.WALL;
             }
-            Cam = new Camera(new Vector2(0, 0), new Vector2(32f, 32f));
+            Cam = new Camera(new Vector2(0, 0), new Vector2(16f, 16f));
             SimpleUtils.Init(GraphicsDevice);
 
             base.Initialize( );
@@ -75,7 +77,7 @@ namespace LightRise.MapEditor {
         protected override void LoadContent( ) {
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            Back = Content.Load<Texture2D>("SampleFloorBG");
+            Back = Content.Load<Texture2D>("L1");
 
             // TODO: use this.Content to load your game content here
         }
@@ -130,13 +132,13 @@ namespace LightRise.MapEditor {
                 CurrentValue = Map.EMPTY;
             } else if (KeyboardState.IsKeyDown(Keys.OemTilde)) {
                 try {
-                    string ID = Interaction.InputBox("ID of the object", "Input", "");
+                    /*string ID = Interaction.InputBox("ID of the object", "Input", "");
                     foreach (var a in ListOfInstances) {
                         if (a.ID == ID) {
                             throw new Exception("It is not possible to create an object with this ID");
                         }
                     }
-                    ListOfInstances.Add(new Interactive(SelectedMap * MAP_SIZE + SelectedPoint, ID));
+                    ListOfInstances.Add(new Interaction(SelectedMap * MAP_SIZE + SelectedPoint, ID));*/
                 } catch { }
             }
 
@@ -229,14 +231,16 @@ namespace LightRise.MapEditor {
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Black);
             SpriteBatch.Begin( );
-            SpriteBatch.Draw(Back, new Rectangle(Cam.WorldToWindow(new Point(9, 1).ToVector2()), (new Point(80, 34).ToVector2() * Cam.Scale / 2f).ToPoint()), Color.White);
+            SpriteBatch.Draw(Back, new Rectangle(Cam.WorldToWindow(new Point(-26, 3).ToVector2()), (new Point(429, 86).ToVector2() * Cam.Scale).ToPoint()), Color.White);
 
             for (uint i = 0; i < Maps.Length; i++) {
                 for (uint j = 0; j < Maps[i].Length; j++) {
                     Maps[i][j].Draw(SpriteBatch, new Camera(Cam.Position - new Vector2(MAP_SIZE.X * i, MAP_SIZE.Y * j), Cam.Scale));
                 }
             }
-            SpriteBatch.Draw(SimpleUtils.WhiteRect, new Rectangle(Cam.WorldToWindow(SelectedPoint.Vector2( ).Add(0.25f)), (Cam.Scale / 2f).RoundToPoint( )), new Color(0, 0, 255, 127));
+            SpriteBatch.Draw(SimpleUtils.WhiteRect, new Rectangle(Cam.WorldToWindow(SelectedPoint.Vector2( ).Add(0.25f) + 
+                new Vector2(MAP_SIZE.X * SelectedMap.X, MAP_SIZE.Y * SelectedMap.Y)), 
+                (Cam.Scale / 2f).RoundToPoint( )), new Color(0, 0, 255, 127));
             SpriteBatch.Draw(SimpleUtils.WhiteRect, new Rectangle(Cam.WorldToWindow(PlayerPosition.Vector2( ) + new Vector2(0.25f, 0.5f)), (Cam.Scale + new Vector2(-Cam.Scale.X / 2f, Cam.Scale.Y / 2f)).RoundToPoint( )), Color.Green);
             SpriteBatch.End( );
 

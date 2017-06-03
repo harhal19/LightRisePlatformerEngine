@@ -24,6 +24,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -39,8 +41,9 @@
     <Compile Include="Comp.cs" />
     <Compile Include="Door.cs" />
     <Compile Include="EmptyMapException.cs" />
+    <Compile Include="GameObject.cs" />
     <Compile Include="Instance.cs" />
-    <Compile Include="Interactive.cs" />
+    <Compile Include="Interaction.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="NegativeValueException.cs" />

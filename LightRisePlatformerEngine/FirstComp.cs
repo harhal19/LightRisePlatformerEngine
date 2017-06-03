@@ -13,7 +13,7 @@ namespace LightRise.Main {
 
         public override void Connect( ) {
             base.Connect( );
-            Program.MainThread.HackScreen = Program.MainThread.FirstHackScreen;// FirstHack(Program.MainThread.HackFont, Program.MainThread.SpriteBatch, Program.MainThread.Terminal);
+            //Program.MainThread.HackScreen = Program.MainThread.FirstHackScreen;// FirstHack(Program.MainThread.HackFont, Program.MainThread.SpriteBatch, Program.MainThread.Terminal);
         }
 
         public override void Draw(SpriteBatch surface, Camera camera) {
