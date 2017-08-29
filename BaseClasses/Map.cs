@@ -181,10 +181,5 @@ namespace LightRise.BaseClasses {
             }
             return result;
         }
-
-        /*public static Map GenerateFromSerializer(LevelSerializer.MapSerializer serializer)
-        {
-
-        }*/
     }
 }

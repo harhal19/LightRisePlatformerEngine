@@ -1,0 +1,166 @@
+HeroBackView.png
+size: 0,0
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+foot2
+  rotate: false
+  xy: 301 ,683
+  size: 77 ,297
+  orig: 77 ,297
+  offset: 0,0
+  index: -1
+foot4
+  rotate: false
+  xy: 505 ,1
+  size: 135 ,165
+  orig: 135 ,165
+  offset: 0,0
+  index: -1
+foot3
+  rotate: false
+  xy: 398 ,465
+  size: 96 ,111
+  orig: 96 ,111
+  offset: 0,0
+  index: -1
+foot8
+  rotate: false
+  xy: 116 ,683
+  size: 102 ,264
+  orig: 102 ,264
+  offset: 0,0
+  index: -1
+foot5
+  rotate: false
+  xy: 275 ,298
+  size: 135 ,165
+  orig: 135 ,165
+  offset: 0,0
+  index: -1
+foot7
+  rotate: false
+  xy: 220 ,683
+  size: 79 ,297
+  orig: 79 ,297
+  offset: 0,0
+  index: -1
+foot1
+  rotate: false
+  xy: 1 ,683
+  size: 113 ,261
+  orig: 113 ,261
+  offset: 0,0
+  index: -1
+foot6
+  rotate: false
+  xy: 476 ,298
+  size: 101 ,103
+  orig: 101 ,103
+  offset: 0,0
+  index: -1
+arm1
+  rotate: false
+  xy: 571 ,718
+  size: 53 ,184
+  orig: 53 ,184
+  offset: 0,0
+  index: -1
+arm2
+  rotate: false
+  xy: 476 ,858
+  size: 72 ,136
+  orig: 72 ,136
+  offset: 0,0
+  index: -1
+arm4
+  rotate: false
+  xy: 496 ,718
+  size: 73 ,138
+  orig: 73 ,138
+  offset: 0,0
+  index: -1
+arm8
+  rotate: false
+  xy: 626 ,718
+  size: 50 ,184
+  orig: 50 ,184
+  offset: 0,0
+  index: -1
+arm6
+  rotate: false
+  xy: 398 ,820
+  size: 76 ,197
+  orig: 76 ,197
+  offset: 0,0
+  index: -1
+arm3
+  rotate: false
+  xy: 461 ,578
+  size: 74 ,138
+  orig: 74 ,138
+  offset: 0,0
+  index: -1
+arm5
+  rotate: false
+  xy: 496 ,403
+  size: 75 ,137
+  orig: 75 ,137
+  offset: 0,0
+  index: -1
+arm7
+  rotate: false
+  xy: 380 ,623
+  size: 79 ,195
+  orig: 79 ,195
+  offset: 0,0
+  index: -1
+skirt
+  rotate: false
+  xy: 221 ,1
+  size: 282 ,197
+  orig: 282 ,197
+  offset: 0,0
+  index: -1
+head
+  rotate: false
+  xy: 275 ,465
+  size: 121 ,156
+  orig: 121 ,157
+  offset: 0 ,0
+  index: -1
+body
+  rotate: false
+  xy: 1 ,1
+  size: 218 ,381
+  orig: 218 ,381
+  offset: 0,0
+  index: -1
+hair1
+  rotate: false
+  xy: 537 ,542
+  size: 39 ,130
+  orig: 39 ,130
+  offset: 0,0
+  index: -1
+hair2
+  rotate: false
+  xy: 412 ,298
+  size: 43 ,127
+  orig: 43 ,127
+  offset: 0,0
+  index: -1
+sum
+  rotate: false
+  xy: 1 ,384
+  size: 272 ,297
+  orig: 272 ,297
+  offset: 0,0
+  index: -1
+123
+  rotate: false
+  xy: 221 ,200
+  size: 408 ,96
+  orig: 408 ,96
+  offset: 0,0
+  index: -1

@@ -34,7 +34,6 @@ namespace LightRise.Main {
                 }
             }
         }
-        public Comp Computer;
         SpriteFont Font;
         Texture2D BG;
         public List<TextContainer> Words;

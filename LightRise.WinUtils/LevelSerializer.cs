@@ -32,24 +32,6 @@ namespace LightRise.WinUtilsLib
             bf.Serialize(fs, levelSerializer);
             fs.Close();
         }
-
-        /*public Level LoadFromFile(string fileName)
-        {
-            try
-            {
-                Stream fs = new FileStream(fileName, FileMode.Open);
-                BinaryFormatter bf = new BinaryFormatter();
-                bf.Deserialize(fs);
-                fs.Close();
-                Level level = new Level();
-                level.Map = Map.LoadFromSerializer()
-            }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show(ex.Message);
-                return null;
-            }
-        }*/
     }
 
     [Serializable]

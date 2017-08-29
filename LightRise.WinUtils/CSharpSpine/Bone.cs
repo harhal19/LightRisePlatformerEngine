@@ -105,8 +105,6 @@ namespace Spine {
 			ay = y;
 			arotation = rotation;
 			Skeleton skeleton = this.skeleton;
-            /*scaleX *= skeleton.scale;
-            scaleY *= skeleton.scale;*/
             ascaleX = scaleX;
 			ascaleY = scaleY;
 			ashearX = shearX;

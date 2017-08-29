@@ -49,9 +49,8 @@ namespace LightRise.Main
         public Player(Level world, Point position, GraphicsDevice graphicDevice) : base(world, position.ToVector2(), new Vector2(2, 5), 70f, 15f, 7f, 20f, 70f)
         {
             Items = new List<TextObject>();
-            Hero = new SpineObject(graphicDevice, "Animations/Hero/Hero", 1/200f /*1 / 250f*/, Position);
+            Hero = new SpineObject(graphicDevice, "Animations/Hero/Hero", 1/200f , Position);
             HeroBackView = new SpineObject(graphicDevice, "Animations/Hero/HeroBackView", 1 / 200f , Position);
-            //currentHero.Skeleton.FindSlot("girl_sword").Attachment = null;
             Hero.Skeleton.FindSlot("planca1").Attachment = null;
             Hero.Skeleton.FindSlot("planca2").Attachment = null;
             Hero.Skeleton.FindSlot("planca3").Attachment = null;
@@ -89,12 +88,6 @@ namespace LightRise.Main
                         currentHero.State.ClearTracks();
                         currentHero.State.SetAnimation(0, CROUCH_GO_ANIMATION, true);
                     }
-            }
-            else
-            {
-                /*if (lastLinearSpeed == 0 && LinearSpeed != 0)
-                    if (!crouching)
-                        currentHero.State.SetAnimation(0, RUN_ANIMATION, true);*/
             }
             if (LinearSpeed > 0)
                 currentHero.Skeleton.FlipX = RIGHT;
@@ -140,11 +133,6 @@ namespace LightRise.Main
         protected override void StopUpdater(float ms)
         {
             base.StopUpdater(ms);
-            /*if (FallingSpeed != 0)
-            {
-                currentHero.State.SetAnimation(0, STAND_ANIMATION, true);
-            }
-            else*/
             if (crouching)
             {
                 currentHero.State.ClearTracks();
@@ -357,10 +345,10 @@ namespace LightRise.Main
         {
             Vector2 cameraOffset = (camera.Position - (Position - Size / camera.Scale / 2f - new Vector2(surface.GraphicsDevice.Viewport.Width / camera.Scale.X / 2, surface.GraphicsDevice.Viewport.Height / camera.Scale.Y / 2)));
            
-            if (cameraOffset.Length() > 0.2f)
+            if (cameraOffset.Length() > 0.4f)
             {
                 cameraOffset.Normalize();
-                cameraOffset *= 0.2f;
+                cameraOffset *= 0.4f;
             }
             camera.Position -= cameraOffset;
             if (currentHero == null)

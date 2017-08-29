@@ -32,7 +32,7 @@ namespace LightRise.Main
 
             public Bridge(Level world, Vector2 position, Vector2 size, GraphicsDevice graphicDevice) : base(world, position, size)
             {
-                spine = new SpineObject(graphicDevice, "Animations/L1/Bridge", 1 / 60f /*1 / 250f*/, Position);
+                spine = new SpineObject(graphicDevice, "Animations/L1/Bridge", 1 / 60f, Position);
                 spine.State.Event += delegate (TrackEntry entry, Event e)
                 {
                     e.Int = e.Data.Name[3] - '1';
@@ -119,40 +119,10 @@ namespace LightRise.Main
             Map.Draw(SpriteBatch, Cam);
 #endif
             SpriteBatch.End();
-            /*Door1.Draw(SpriteBatch, Cam);
-            Door2.Draw(SpriteBatch, Cam);
-            foreach (var a in Instances)
-            {
-                a.Draw(SpriteBatch, Cam);
-            }
-            if (BigDoor != null)
-                SpriteBatch.Draw(BigDoor, new Rectangle(Cam.WorldToWindow(new Vector2(11f, 6.7f)), (Cam.Scale * 2.3f).ToPoint()), Color.White);
-            try
-            {
-                SpriteBatch.End();
-            }
-            catch (InvalidOperationException) { }*/
             foreach (var obj in Objects)
                 obj.Value.Draw(SpriteBatch, Cam);
             foreach (var zone in ActiveZones)
                 zone.Value.Draw(SpriteBatch, Cam);
-
-            /*SpriteBatch.Begin();
-            foreach (var a in GUIes)
-            {
-                a.Draw(SpriteBatch, Cam);
-            }
-            SpriteBatch.End();
-            if (HackScreen != null)
-                HackScreen.Draw(Cam);
-            if (Finish)
-            {
-                SpriteBatch.Begin();
-                //if (finishColor.A < 100) finishColor.A++;
-                SpriteBatch.Draw(SimpleUtils.WhiteRect, new Rectangle(0, 0, SpriteBatch.GraphicsDevice.Viewport.Width, SpriteBatch.GraphicsDevice.Viewport.Height), Color.Black);
-                SpriteBatch.DrawString(HackFont, "Demo version finished", Vector2.One * 50, Color.Green);
-                SpriteBatch.End();
-            }*/
         }
     }
 }

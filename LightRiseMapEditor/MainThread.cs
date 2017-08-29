@@ -130,16 +130,6 @@ namespace LightRise.MapEditor {
                 CurrentValue = Map.LADDER;
             } else if (KeyboardState.IsKeyDown(Keys.Tab)) {
                 CurrentValue = Map.EMPTY;
-            } else if (KeyboardState.IsKeyDown(Keys.OemTilde)) {
-                try {
-                    /*string ID = Interaction.InputBox("ID of the object", "Input", "");
-                    foreach (var a in ListOfInstances) {
-                        if (a.ID == ID) {
-                            throw new Exception("It is not possible to create an object with this ID");
-                        }
-                    }
-                    ListOfInstances.Add(new Interaction(SelectedMap * MAP_SIZE + SelectedPoint, ID));*/
-                } catch { }
             }
 
             if (MouseState.LeftButton == ButtonState.Pressed) {

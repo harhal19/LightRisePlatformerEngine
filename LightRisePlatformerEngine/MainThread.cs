@@ -14,32 +14,14 @@ namespace LightRise.Main {
     /// This is the main type for your game.
     /// </summary>
     public class MainThread : Game {
-
-        //Action script1;
-        //public Action script2;
-        //Action script3;
         public GraphicsDeviceManager Graphics { get; protected set; }
         public SpriteBatch SpriteBatch;
         Level level;
-        //SpineObject SpineInstance;
-        //Texture2D BigDoor;
-        //bool Finish = false;
-        //Color finishColor = Color.White;
-
-        //public List<Instance> Instances = new List<Instance>( );
-        //public List<Instance> GUIes = new List<Instance>( );
-
-        //RenderTarget2D[ ] Renders;
-        //public Map Map { get; protected set; }
         public Player Player { get; protected set; }
-        /*public HackScreen HackScreen;
-        public HackScreen FirstHackScreen;
-        public HackScreen SecondHackScreen;
-        public SpriteFont HackFont;
-        public Texture2D Terminal;
-        Door Door1;
-        Door Door2;*/
+        Texture2D soundOn;
+        Texture2D soundOff;
         MainMenu mainMenu;
+        StepState State;
 
         public MainThread( ) {
             Graphics = new GraphicsDeviceManager(this);
@@ -99,6 +81,10 @@ namespace LightRise.Main {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             mainMenu = new MainMenu(Content.Load<Texture2D>("mainMenu"));
             generate();
+            MediaPlayer.IsMuted = Settings.Default.SoundOn;
+            soundOn = Content.Load<Texture2D>("soundOn");
+            soundOff = Content.Load<Texture2D>("soundOff");
+            MediaPlayer.Play(Content.Load<Song>("Music"));
         }
 
         /// <summary>
@@ -116,17 +102,34 @@ namespace LightRise.Main {
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            StepState State = new StepState(gameTime, Keyboard.GetState(), Mouse.GetState());
+            if (State == null)
+                State = new StepState(gameTime, Keyboard.GetState(), Mouse.GetState());
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed && State.Mouse.LeftButton == ButtonState.Released)
+                if (new Rectangle(GraphicsDevice.Viewport.Width - 10 - 176 * 2, 10, 176 * 2, 50 * 2).Contains(Mouse.GetState().Position))
+                {
+                    MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
+                    Settings.Default.SoundOn = MediaPlayer.IsMuted;
+                    Settings.Default.Save();
+                }
+            State = new StepState(gameTime, Keyboard.GetState(), Mouse.GetState());
             if (mainMenu == null)
             {
-                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed /*|| State.Keyboard.IsKeyDown(Keys.Escape)*/)
-                    Exit();
+                if (State.Keyboard.IsKeyDown(Keys.Escape))
+                {
+                    mainMenu = new MainMenu(Content.Load<Texture2D>("mainMenu"));
+                    generate();
+                }
                 Player.Step(State);
                 level.Update(gameTime);
             }
             else
+            {
+                if (State.Keyboard.IsKeyDown(Keys.Escape))
+                    Exit();
+                else
                 if (State.Keyboard.GetPressedKeys().Length > 0)
                     mainMenu = null;
+            }
             base.Update(gameTime);
         }
 
@@ -143,6 +146,12 @@ namespace LightRise.Main {
             }
             else
                 mainMenu.Draw(SpriteBatch);
+            SpriteBatch.Begin();
+            if (MediaPlayer.IsMuted)
+                SpriteBatch.Draw(soundOff, new Rectangle(GraphicsDevice.Viewport.Width - 10 - 176 * 2, 10, 176 * 2, 50 * 2), Color.White);
+            else
+                SpriteBatch.Draw(soundOn, new Rectangle(GraphicsDevice.Viewport.Width - 10 - 176 * 2, 10, 176 * 2, 50 * 2), Color.White);
+            SpriteBatch.End();
             base.Draw(gameTime);
 
         }

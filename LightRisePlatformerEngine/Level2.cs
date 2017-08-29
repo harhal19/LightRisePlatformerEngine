@@ -67,6 +67,8 @@ namespace LightRise.Main
             Tuple<Map, Point> tuple = WinUtils.LoadMap("Content/L2.lrmap");
             Map = tuple.Item1;
             Player = new Player(this, new Point(2, 63), GraphicsDevice);
+            door0Tex = Content.Load<Texture2D>("door0");
+            door1Tex = Content.Load<Texture2D>("door1");
             Objects.Add("door0", new Door(door0Tex, this, new Vector2(71, 36), new Vector2(4, 2)));
             Objects.Add("door1", new Door(door1Tex, this, new Vector2(89, 66), new Vector2(2, 10)));
             Objects.Add("door2", new Door(door1Tex, this, new Vector2(114, 43), new Vector2(2, 9)));
@@ -84,10 +86,6 @@ namespace LightRise.Main
             Back_0 = Content.Load<Texture2D>("L2");
             Back_1 = Content.Load<Texture2D>("BG_1");
             Back_2 = Content.Load<Texture2D>("BG_2");
-            door0Tex = Content.Load<Texture2D>("door0");
-            door1Tex = Content.Load<Texture2D>("door1");
-            FirstHack.Items = Player.Items;
-            SecondHack.Items = Player.Items;
             Interactives.Add("Console0", new InteractivePoint(new Vector2(92 - 26, 28 + 3), 6f));
             Map[98 - 26, 34 + 3] = Map.WALL;
             Map[99 - 26, 34 + 3] = Map.WALL;
